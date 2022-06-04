@@ -7,7 +7,7 @@ class Gameboard
   @@MAX_TURNS = 6
 
   def initialize(player)
-    @turns = 0
+    @wrong_guesses = 0
     @word = load_word.split('')
     @guess_arr = Array.new(@word.length, '_')
     @player = player
@@ -33,7 +33,7 @@ class Gameboard
   end
 
   def gameover?
-    win? || @turns == @@MAX_TURNS
+    win? || @wrong_guesses == @@MAX_TURNS
   end
 
   def win?
@@ -42,16 +42,21 @@ class Gameboard
 
   def make_guess
     guess = @player.make_guess
-    @word.each_index { |i| @guess_arr[i] = guess if @word[i] == guess }
-    @turns += 1
+    @word.each_index do |i|
+      if @word[i] == guess
+        @guess_arr[i] = guess
+        @wrong_guesses -= 1
+      end
+    end
+    @wrong_guesses += 1
   end
 
   def print_info
     system('clear')
     p @word
     puts "Previous tries: #{@player.guesses.join(' ')}"
-    puts "Tries left: #{@@MAX_TURNS - @turns}"
-    puts Util::STAGES[@turns]
+    puts "Tries left: #{@@MAX_TURNS - @wrong_guesses}"
+    puts Util::STAGES[@wrong_guesses]
     puts @guess_arr.join(' ')
   end
 
