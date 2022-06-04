@@ -11,18 +11,20 @@ def word_filter
 
   throw "No such file: #{file_path}" unless File.exist?(file_path)
 
-  filtered_file = File.new(new_path(file_path), 'w')
+  new_file_path = new_path(file_path)
 
-  if File.exist?(filtered_file)
+  if File.exist?(new_file_path)
     puts 'There is already a filtered file. Shutting down..'
     return
   end
 
+  filtered_file = File.new(new_file_path, 'w')
   File.open(file_path, 'r') do |file|
     file.each_line { |line| filtered_file.puts line.chomp if line.chomp.length.between?(min, max) }
   end
 
   filtered_file.close
+  puts 'Done'
 end
 
 word_filter
