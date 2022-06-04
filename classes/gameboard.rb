@@ -7,6 +7,10 @@ require_relative '../util/util'
 class Gameboard
   @@MAX_TURNS = 6
 
+  def self.load_saved_game(path)
+    data = JSON.parse File.read(path)
+  end
+
   def initialize(player)
     @wrong_guesses = 0
     @word = load_word.split('')
@@ -69,12 +73,12 @@ class Gameboard
   def save
     print 'Enter save name: '
     name = gets.chomp
-    if File.exist?("./assets/#{name}.json")
+    if File.exist?("./saves/#{name}.json")
       puts 'There is already a save with this name.'
       save
     else
       json = JSON.dump({ wrong_guesses: @wrong_guesses, word: @word, guess_arr: @guess_arr, guesses: @player.guesses })
-      File.open("./assets/#{name}.json", 'w') { |file| file.puts json }
+      File.open("./saves/#{name}.json", 'w') { |file| file.puts json }
       puts 'Game saved!'
     end
   end

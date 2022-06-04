@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 def new_path(file_path)
   "#{File.split(file_path)[0]}/filtered_ #{File.basename(file_path)}"

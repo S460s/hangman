@@ -9,10 +9,10 @@ class Player
   end
 
   def make_guess
-    puts 'Enter a guess: '
+    puts 'Enter a guess ("*" for save): '
     guess = gets.chomp[0].downcase
     unless @guesses.include?(guess)
-      @guesses << guess
+      @guesses << guess unless guess == '*'
       return guess
     end
 
