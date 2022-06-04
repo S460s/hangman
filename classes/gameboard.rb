@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../util/util'
+
 # Gameboard class for the game
 class Gameboard
   @@MAX_TURNS = 6
@@ -49,6 +51,7 @@ class Gameboard
     p @word
     puts "Previous tries: #{@player.guesses.join(' ')}"
     puts "Tries left: #{@@MAX_TURNS - @turns}"
+    puts Util::STAGES[@turns]
     puts @guess_arr.join(' ')
   end
 
