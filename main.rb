@@ -7,6 +7,15 @@ def saves
   Dir['./saves/*']
 end
 
+def load_word
+  word = ''
+  File.open('./assets/filtered_ words.txt', 'r') do |file|
+    r = rand(file.size / 15)
+    file.each_with_index { |line, index| return word = line.chomp if index == r }
+  end
+  word
+end
+
 def start
   puts 'New game (0), Load game (1)'
   flag = gets.chomp
@@ -14,7 +23,7 @@ def start
   case flag
   when '0'
     player = Player.new
-    gameboard = Gameboard.new player
+    gameboard = Gameboard.init player, load_word.split('')
     gameboard.game_loop
 
   when '1'
@@ -28,7 +37,8 @@ def start
       puts 'Choose a save game: '
       saves.each_with_index { |item, index| puts "#{index}) #{File.basename(item, '.json')}" }
       ans = gets.chomp.to_i
-      Gameboard.load_saved_game(saves[ans])
+      gameboard = Gameboard.load_saved_game(saves[ans])
+      gameboard.game_loop
     end
   else
     puts 'Good bye.'

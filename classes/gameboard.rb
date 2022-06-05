@@ -2,20 +2,27 @@
 
 require 'json'
 require_relative '../util/util'
+require_relative './player'
 
 # Gameboard class for the game
 class Gameboard
   @@MAX_TURNS = 6
 
-  def self.load_saved_game(path)
-    data = JSON.parse File.read(path)
+  def initialize(wrong_guesses, word, guess_arr, player)
+    @wrong_guesses = wrong_guesses
+    @word = word
+    @guess_arr = guess_arr
+    @player = player
   end
 
-  def initialize(player)
-    @wrong_guesses = 0
-    @word = load_word.split('')
-    @guess_arr = Array.new(@word.length, '_')
-    @player = player
+  def self.load_saved_game(path)
+    data = JSON.parse File.read(path)
+    player = Player.new data['guesses']
+    new(data['wrong_guesses'], data['word'], data['guess_arr'], player)
+  end
+
+  def self.init(player, word)
+    new(0, word, Array.new(word.length, '_'), player)
   end
 
   def game_loop
@@ -60,12 +67,9 @@ class Gameboard
       save
     else
       @word.each_index do |i|
-        if @word[i] == guess
-          @guess_arr[i] = guess
-          @wrong_guesses -= 1
-        end
+        @guess_arr[i] = guess if @word[i] == guess
       end
-      @wrong_guesses += 1
+      @wrong_guesses += 1 unless @word.include?(guess)
       system('clear')
     end
   end
@@ -81,15 +85,5 @@ class Gameboard
       File.open("./saves/#{name}.json", 'w') { |file| file.puts json }
       puts 'Game saved!'
     end
-  end
-
-  # HACK
-  def load_word
-    word = ''
-    File.open('./assets/filtered_ words.txt', 'r') do |file|
-      r = rand(file.size / 15)
-      file.each_with_index { |line, index| return word = line.chomp if index == r }
-    end
-    word
   end
 end

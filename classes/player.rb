@@ -4,8 +4,8 @@
 class Player
   attr_reader :guesses
 
-  def initialize
-    @guesses = []
+  def initialize(guesses = [])
+    @guesses = guesses
   end
 
   def make_guess
